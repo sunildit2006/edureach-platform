@@ -15,7 +15,13 @@ export const startCall = async (req: Request, res: Response, next: NextFunction)
     }
 
     const currentUser = req.user;
-    const user = await User.findById(currentUser.userId).select("name email");
+
+if (!currentUser) {
+  res.status(401).json({ success: false, message: "Unauthorized." });
+  return;
+}
+
+const user = await User.findById(currentUser.userId).select("name email");
 
     if (!user) {
       res.status(404).json({ success: false, message: "User not found." });
